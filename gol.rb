@@ -1,48 +1,41 @@
 def title(text)
-  puts "\n" + "*"*10 + "\e[32m#{text}\e[0m"
+  puts "\e[33m" + text.center(30, ?*) + "\e[0m"
 end
+
+Print = -> x { puts x }
+P     = -> x { Print.(x.inspect) }
+True  = -> x { -> y { x }     }
+False = -> x { -> y { y }     }
+
 Equal = -> value1 {
           -> value2 {
               (value1 == value2) ? True : False }}
 
-Print = -> (x) { puts x.inspect }
+If    = -> conditional {
+          -> true_case {
+            -> false_case {
+              conditional.(true_case).(false_case).()}}}
 
-True = -> (x) {
-  -> (y) {
-    x
-  }
-}
+Not   = -> condition {
+          If.(condition)
+            .(-> { False })
+            .(-> { True })}
 
-False = -> (x) {
-  -> (y) {
-    y
-  }
-}
+title "Boolean" #################
+Pass = -> { Print.("\e[32mPass\e[0m") }
+Fail = -> { Print.("\e[31mFAIL\e[0m") }
 
-Not = -> condition {
-  If.(condition).(-> { False }).(-> { True })
-}
-
-Pass   = -> { Print.("P")}
-Fail   = -> { Print.("FAIL!!")}
-AssertEqual = -> a { -> b { If.(Equal.(a).(b)).(Pass).(Fail) } }
-RefuteEqual = -> a { -> b { If.(Equal.(a).(b)).(Fail).(Pass) } }
-
-If = -> conditional {
-       -> true_case {
-         -> false_case {
-           conditional.(true_case).(false_case).()}}}
-
-title "Assertions"
-AssertEqual.(1).(1)
-RefuteEqual.(2).(1)
-
-
-title "Boolean"
 If.(True).(Pass).(Fail)
 If.(False).(Fail).(Pass)
 If.(Not.(True)).(Fail).(Pass)
 If.(Not.(False)).(Pass).(Fail)
+
+title "Assertions" #################
+AssertEqual = -> a { -> b { If.(Equal.(a).(b)).(Pass).(Fail) } }
+RefuteEqual = -> a { -> b { If.(Equal.(a).(b)).(Fail).(Pass) } }
+
+AssertEqual.(1).(1)
+RefuteEqual.(2).(1)
 
 
 title "VALUES" #################
@@ -50,17 +43,18 @@ AssertEqual.(1).(1)
 RefuteEqual.(2).(1)
 
 Cons = -> head {
-  -> tail {
-    -> f {
-      f.(head).(tail)}}}
+         -> tail {
+           -> f {
+             f.(head).(tail)}}}
 
 Car = ->list {
-  list.(-> first {
-          -> second {
-            first }})}
+        list.(
+          -> first {
+            -> second {
+              first }})}
 
 Cdr = -> list {
-  list.(-> first {
+        list.(-> first {
           -> second {
             second }})}
 
@@ -79,15 +73,12 @@ Cell = -> x {
            Cons.(x).(y) }}
 
 CellEqual = -> cell1 {
-  -> cell2 {
-    Equal.(Car.(cell1))
-    .(Car.(cell2)).(
-      Equal.(Cdr.(cell1)).(Cdr.(cell2)).(True).(False)
-    ).(
-      False
-    )
-  }
-}
+              -> cell2 {
+                # car(cell1) == car(cell2) && cdr(cell1) == cdr(cell2)
+                Equal.(Car.(cell1))
+                     .(Car.(cell2))
+                     .(Equal.(Cdr.(cell1)).(Cdr.(cell2)))
+                     .(False)}}
 
 Cell1 = Cell.(1).(1)
 Cell2 = Cell.(1).(1)
@@ -97,37 +88,31 @@ If.(Not.(CellEqual.(Cell1).(Cell3))).(Pass).(Fail)
 
 title "LISTS"
 
-EmptyList = -> x=nil {
-  raise "Should not call EmptyList"
-}
+EmptyList = -> * { raise "Should not call EmptyList" }
 
-List2 = -> half_cons {
-  -> successor {
-    # (1...
-    # 2
-    If.(Equal.(successor).(EmptyList))
-      .(-> { half_cons.(EmptyList) })
-
-  }
-}
+List2 = -> previous {
+          -> current {
+            If.(Equal.(current).(EmptyList))
+              .(-> { previous.(EmptyList) })
+              .(-> {
+                List2.(
+                  -> successor {
+                    previous.(Cons.(current).(successor))})})}}
 
 List = -> element {
   If.(Equal.(element).(EmptyList))
     .(-> { EmptyList })
-    .(
-      -> {
-        List2.(Cons.(element))
-      }
-    )
-}
+    .(-> { List2.(Cons.(element)) })}
 
 AssertEqual.(Car.(Cons.(1).(EmptyList))).(1)
 AssertEqual.(List.(EmptyList)).(EmptyList)
-AssertEqual.(Car.(EmptyList)).(EmptyList)
-AssertEqual.(Cdr.(EmptyList)).(EmptyList)
+AssertEqual.(Car.(List.(1).(EmptyList))).(1)
+AssertEqual.(Cdr.(List.(1).(EmptyList))).(EmptyList)
+AssertEqual.(Car.(List.(1).(2).(EmptyList))).(1)
+AssertEqual.(Car.(Cdr.(List.(1).(2).(EmptyList)))).(2)
+AssertEqual.(Cdr.(Cdr.(List.(1).(2).(EmptyList)))).(EmptyList)
+AssertEqual.(Car.(Cdr.(Cdr.(List.(1).(2).(3).(EmptyList))))).(3)
 
-
-# AssertEqual.(Car.(List.(1).(EmptyList))).(1)
 
 __END__
 AssertEqual.(List.(EmptyList)).(EmptyList)

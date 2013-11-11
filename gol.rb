@@ -86,18 +86,17 @@ Cell3 = Cell.(2).(2)
 If.(CellEqual.(Cell1).(Cell2)).(Pass).(Fail)
 If.(Not.(CellEqual.(Cell1).(Cell3))).(Pass).(Fail)
 
-title "LISTS"
+title "CONSTRUCTING LISTS" #################
 
 EmptyList = -> * { raise "Should not call EmptyList" }
 
 List2 = -> previous {
-          -> current {
-            If.(Equal.(current).(EmptyList))
-              .(-> { previous.(EmptyList) })
-              .(-> {
-                List2.(
-                  -> successor {
-                    previous.(Cons.(current).(successor))})})}}
+  -> current {
+    If.(Equal.(current).(EmptyList))
+      .(-> { previous.(EmptyList) })
+      .(-> { List2.(
+               -> successor {
+                 previous.(Cons.(current).(successor))})})}}
 
 List = -> element {
   If.(Equal.(element).(EmptyList))
@@ -113,6 +112,21 @@ AssertEqual.(Car.(Cdr.(List.(1).(2).(EmptyList)))).(2)
 AssertEqual.(Cdr.(Cdr.(List.(1).(2).(EmptyList)))).(EmptyList)
 AssertEqual.(Car.(Cdr.(Cdr.(List.(1).(2).(3).(EmptyList))))).(3)
 
+title "ACCESSING LISTS"
+
+At = -> list {
+  -> index {
+    If.(Equal.(index).(0))
+      .(-> { If.(Equal.(list).(EmptyList))
+               .(-> { EmptyList  })
+               .(-> { Car.(list) })})
+      .(-> { At.(Cdr.(list)).(index-1) })}}
+
+list = List.('a').('b').('c').(EmptyList)
+AssertEqual.('a').(At.(list).(0))
+AssertEqual.('b').(At.(list).(1))
+AssertEqual.('c').(At.(list).(2))
+AssertEqual.(EmptyList).(At.(list).(3))
 
 __END__
 AssertEqual.(List.(EmptyList)).(EmptyList)

@@ -125,24 +125,3 @@ AssertEqual['a'][At[list][0]]
 AssertEqual['b'][At[list][1]]
 AssertEqual['c'][At[list][2]]
 
-__END__
-AssertEqual.(List.(EmptyList)).(EmptyList)
-
-OneElementList = List.(1).(EmptyList)
-AssertEqual.(Car.(OneElementList)).(1)
-AssertEqual.(Cdr.(OneElementList)).(EmptyList)
-
-TwoElementList = List.(1).(2).(EmptyList)
-AssertEqual.(Car.(TwoElementList)).(1)
-AssertEqual.(Car.(Cdr.(TwoElementList))).(2)
-AssertEqual.(Car.(Cdr.(Cdr.(TwoElementList)))).(EmptyList)
-
-
-
-
-#MyList = List.(1).(2).(EmptyList)
-#AssertEqual.(Car.(MyList)).(1)
-#AssertEqual.(Car.(Cdr.(MyList))).(2)
-
-#Size = -> list { }
-#AssertEqual.(Size.(MyList)).(2)

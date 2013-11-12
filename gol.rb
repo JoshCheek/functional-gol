@@ -2,6 +2,20 @@ def title(text)
   puts "\e[33m" + text.center(30, ?*) + "\e[0m"
 end
 
+title "Composition" #################
+Compose = -> op1 {
+  -> op2 {
+    -> operand {
+      op1[op2[operand]] }}}
+
+class Proc
+  def ~(op)
+    Compose[self][op]
+  end
+end
+
+
+
 Print = -> x { puts x }
 P     = -> x { Print.(x.inspect) }
 True  = -> x { -> y { x }     }
@@ -31,12 +45,22 @@ If[Not[True]][Fail][Pass]
 If[Not[False]][Pass][Fail]
 
 title "Assertions" #################
-AssertEqual = -> a { -> b { If[Equal[a][b]][Pass][Fail] } }
-RefuteEqual = -> a { -> b { If[Equal[a][b]][Fail][Pass] } }
+Assert      = -> bool { If[bool][Pass][Fail] }
+AssertEqual = -> a { -> b { Assert[Equal[a][b]] } }
+
+Refute      = Assert.~ Not
+RefuteEqual = -> a { -> b { Refute[Equal[a][b]] } }
 
 AssertEqual[1][1]
 RefuteEqual[2][1]
+Assert[True]
 
+title "Test Composition" #################
+Assert[Compose[Not][Not][True]]
+Refute[Compose[Not][Not][False]]
+
+Assert[Not.~(Not)[True]]
+Refute[Not.~(Not)[False]]
 
 title "VALUES" #################
 AssertEqual[1][1]

@@ -94,17 +94,18 @@ RefuteEqual[Car[Cdr[MyCons]]][1]
 title "CONSTRUCTING LISTS" #################
 
 EmptyList = -> * { raise "Should not call EmptyList" }
+IsEmpty = -> list { Equal[list][EmptyList] }
 
 List2 = -> previous {
   -> current {
-    If.(Equal[current][EmptyList])
+    If.(IsEmpty[current])
       .(-> { previous[EmptyList] })
       .(-> { List2.(
                -> successor {
                  previous[Cons[current][successor]]})})}}
 
 List = -> element {
-  If.(Equal[element][EmptyList])
+  If.(IsEmpty[element])
     .(-> { EmptyList })
     .(-> { List2[Cons[element]] })}
 
@@ -129,6 +130,27 @@ list = List['a']['b']['c'][EmptyList]
 AssertEqual['a'][At[list][0]]
 AssertEqual['b'][At[list][1]]
 AssertEqual['c'][At[list][2]]
+
+ListSize = -> list {
+  If.(IsEmpty[list])
+    .(-> { 0 })
+    .(-> { 1 + ListSize[Cdr[list]] }) }
+
+AssertEqual[ListSize[EmptyList]][0]
+AssertEqual[ListSize[List[2][EmptyList]]][1]
+AssertEqual[ListSize[List[2][3][EmptyList]]][2]
+
+title "SET" #################
+# Set = List
+# SetSize = ListSize
+
+# MySet = Set
+# AssertEqual[SetSize[Myset]][0]
+# SetAdd[MySet][2]
+# AssertEqual[SetSize[Myset]][1]
+
+
+#AssertEqual[SetSize[Set[Cell[0][0]]]][1]
 
 title "CELLS" #################
 

@@ -91,25 +91,6 @@ RefuteEqual[Car[MyCons]][2]
 AssertEqual[Car[Cdr[MyCons]]][2]
 RefuteEqual[Car[Cdr[MyCons]]][1]
 
-title "CELLS" #################
-
-Cell = -> x {
-         -> y { Cons[x][y] }}
-
-CellEqual = -> cell1 {
-              -> cell2 {
-                # car(cell1) == car(cell2) && cdr(cell1) == cdr(cell2)
-                Equal.(Car[cell1])
-                     .(Car[cell2])
-                     .(Equal[Cdr[cell1]][Cdr[cell2]])
-                     .(False)}}
-
-Cell1 = Cell[1][1]
-Cell2 = Cell[1][1]
-Cell3 = Cell[2][2]
-If[     CellEqual[Cell1][Cell2]  ][Pass][Fail]
-If[ Not[CellEqual[Cell1][Cell3]] ][Pass][Fail]
-
 title "CONSTRUCTING LISTS" #################
 
 EmptyList = -> * { raise "Should not call EmptyList" }
@@ -148,4 +129,33 @@ list = List['a']['b']['c'][EmptyList]
 AssertEqual['a'][At[list][0]]
 AssertEqual['b'][At[list][1]]
 AssertEqual['c'][At[list][2]]
+
+title "CELLS" #################
+
+Cell = -> x {
+         -> y { List[x][y][EmptyList] }}
+
+X = -> cell { At[cell][0] }
+Y = -> cell { At[cell][1] }
+
+CellEqual = -> cell1 {
+              -> cell2 {
+                # car(cell1) == car(cell2) && cdr(cell1) == cdr(cell2)
+                Equal.(X[cell1])
+                     .(X[cell2])
+                     .(Equal[Y[cell1]][Y[cell2]])
+                     .(False)}}
+
+Cell1 = Cell[1][2]
+AssertEqual[X[Cell1]][1]
+AssertEqual[Y[Cell1]][2]
+
+Cell2 = Cell[1][2]
+Cell3 = Cell[2][2]
+Assert[     CellEqual[Cell1][Cell2]  ]
+Refute[     CellEqual[Cell1][Cell3]  ]
+
+
+title "BOARD" #################
+
 

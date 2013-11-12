@@ -141,16 +141,26 @@ AssertEqual[ListSize[List[2][EmptyList]]][1]
 AssertEqual[ListSize[List[2][3][EmptyList]]][2]
 
 title "SET" #################
-# Set = List
-# SetSize = ListSize
+Set     = List[EmptyList]
+SetSize = ListSize
+SetAdd = -> list {
+  -> element {
+    Cons[element][list]
+  }
+}
 
-# MySet = Set
-# AssertEqual[SetSize[Myset]][0]
-# SetAdd[MySet][2]
-# AssertEqual[SetSize[Myset]][1]
+AssertEqual[SetSize[Set]][0]
+AssertEqual[SetSize[SetAdd[Set][100]]][1]
+AssertEqual[SetSize[SetAdd[SetAdd[Set][100]][200]]][2]
 
+AssertEqual[
+  SetSize[
+    SetAdd[
+      SetAdd[Set][100]
+    ][100]
+  ]
+][1]
 
-#AssertEqual[SetSize[Set[Cell[0][0]]]][1]
 
 title "CELLS" #################
 
@@ -179,5 +189,7 @@ Refute[     CellEqual[Cell1][Cell3]  ]
 
 
 title "BOARD" #################
+
+#Board = Set
 
 

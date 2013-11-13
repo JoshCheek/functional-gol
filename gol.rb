@@ -1,5 +1,5 @@
 def title(text)
-  puts "\e[33m" + text.center(30, ?*) + "\e[0m"
+  puts "\n\e[33m" + text.center(30, ?*) + "\e[0m"
 end
 
 title "Composition" #################
@@ -16,28 +16,25 @@ end
 
 
 
-Print = -> x { puts x }
-P     = -> x { Print.(x.inspect) }
-True  = -> x { -> y { x }     }
-False = -> x { -> y { y }     }
+Print = -> x { print x          }
+P     = -> x { Print[x.inspect] }
+True  = -> x { -> y { x }       }
+False = -> x { -> y { y }       }
 
 Equal = -> value1 {
           -> value2 {
               (value1 == value2) ? True : False }}
 
-If    = -> conditional {
+If    = -> bool {
           -> true_case {
             -> false_case {
-              conditional.(true_case).(false_case).()}}}
+              bool.(true_case).(false_case).()}}}
 
-Not   = -> condition {
-          If.(condition)
-            .(-> { False })
-            .(-> { True })}
+Not   = -> bool { bool[False][True] }
 
 title "Boolean" #################
-Pass = -> { Print["\e[32mPass\e[0m"] }
-Fail = -> { Print["\e[31mFAIL\e[0m"] }
+Pass = -> { Print["\e[32m.\e[0m"] }
+Fail = -> { Print["\e[31m.\e[0m"] }
 
 If[True][Pass][Fail]
 If[False][Fail][Pass]
@@ -46,10 +43,10 @@ If[Not[False]][Pass][Fail]
 
 title "Assertions" #################
 Assert      = -> bool { If[bool][Pass][Fail] }
-AssertEqual = -> a { -> b { Assert[Equal[a][b]] } }
+AssertEqual = -> a { Assert.~ Equal[a] }
 
 Refute      = Assert.~ Not
-RefuteEqual = -> a { -> b { Refute[Equal[a][b]] } }
+RefuteEqual = -> a { Refute.~ Equal[a] }
 
 AssertEqual[1][1]
 RefuteEqual[2][1]
@@ -71,17 +68,17 @@ Cons = -> head {
            -> f {
              f[head][tail]}}}
 
-Car = ->list {
+Car = -> list {
   list[
-    -> first {
-      -> second {
-        first }}]}
+    -> head {
+      -> tail {
+        head }}]}
 
 Cdr = -> list {
   list[
-    -> first {
-      -> second {
-        second }}]}
+    -> head {
+      -> tail {
+        tail }}]}
 
 title "LISTS" #################
 MyCons = Cons[1][Cons[2][nil]]
@@ -170,9 +167,10 @@ Cell = -> x {
 X = -> cell { At[cell][0] }
 Y = -> cell { At[cell][1] }
 
+# if we had list equality, we could just delegate to that
+# and then this function would go away
 CellEqual = -> cell1 {
               -> cell2 {
-                # car(cell1) == car(cell2) && cdr(cell1) == cdr(cell2)
                 Equal.(X[cell1])
                      .(X[cell2])
                      .(Equal[Y[cell1]][Y[cell2]])
@@ -184,8 +182,8 @@ AssertEqual[Y[Cell1]][2]
 
 Cell2 = Cell[1][2]
 Cell3 = Cell[2][2]
-Assert[     CellEqual[Cell1][Cell2]  ]
-Refute[     CellEqual[Cell1][Cell3]  ]
+Assert[CellEqual[Cell1][Cell2]]
+Refute[CellEqual[Cell1][Cell3]]
 
 
 title "BOARD" #################

@@ -158,24 +158,28 @@ AssertEqual[ListSize[List[2][3][EmptyList]]][2]
 
 title "ListContains"
 
-ListContains = -> list {
-  -> element {
-    If.(IsEmpty.(list))
-      .(-> { False })
-      .(-> { Or.(-> { Equal.(Car.(list)).(element) })
-               .(-> { ListContains.(Cdr.(list)).(element) })})}}
+ListContains = -> equals {
+  -> list {
+    -> element {
+      If.(IsEmpty.(list))
+        .(-> { False })
+        .(-> { Or.(-> { equals.(Car.(list)).(element) })
+                 .(-> { ListContains[equals].(Cdr.(list)).(element) })})}}
+}
 
-Refute[ListContains[List.(EmptyList)        ][1]]
-Refute[ListContains[List.(2).(EmptyList)    ][1]]
-Assert[ListContains[List.(1).(EmptyList)    ][1]]
-Assert[ListContains[List.(1).(2).(EmptyList)][2]]
+ListContainsInt = ListContains[Equal]
+
+Refute[ListContainsInt[List.(EmptyList)        ][1]]
+Refute[ListContainsInt[List.(2).(EmptyList)    ][1]]
+Assert[ListContainsInt[List.(1).(EmptyList)    ][1]]
+Assert[ListContainsInt[List.(1).(2).(EmptyList)][2]]
 
 title "SET" #################
 Set     = List[EmptyList]
 SetSize = ListSize
 SetAdd = -> set {
   -> element {
-    If.(ListContains[set][element])
+    If.(ListContainsInt[set][element])
       .(-> { set })
       .(-> { Cons[element][set] })}}
 
@@ -193,14 +197,14 @@ AssertEqual[
 
 title "SetContains" ##########
 
-SetContains = ListContains
+SetContainsInt = ListContainsInt
 
-Refute[SetContains[Set][1]]
-Assert[SetContains[SetAdd[Set][1]][1]]
-Refute[SetContains[SetAdd[Set][1]][2]]
-Assert[SetContains[SetAdd[SetAdd[Set][1]][2]][1]]
-Assert[SetContains[SetAdd[SetAdd[Set][1]][2]][2]]
-Refute[SetContains[SetAdd[SetAdd[Set][1]][2]][3]]
+Refute[SetContainsInt[Set][1]]
+Assert[SetContainsInt[SetAdd[Set][1]][1]]
+Refute[SetContainsInt[SetAdd[Set][1]][2]]
+Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][1]]
+Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][2]]
+Refute[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][3]]
 
 
 title "CELLS" #################

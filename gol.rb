@@ -58,10 +58,19 @@ Or = -> cond1 {
     If.(cond1.()).(-> { True })
 }
 
+And = -> cond1 {
+  If.(Not.(cond1.())).(-> { False })
+}
+
 Assert[Or[-> { True  }][-> { True  }]]
 Assert[Or[-> { False }][-> { True  }]]
 Assert[Or[-> { True  }][-> { False }]]
 Refute[Or[-> { False }][-> { False }]]
+
+Assert[And[-> { True  }][-> { True  }]]
+Refute[And[-> { False }][-> { True  }]]
+Refute[And[-> { True  }][-> { False }]]
+Refute[And[-> { False }][-> { False }]]
 
 title "Test Composition" #################
 Assert[Compose[Not][Not][True]]

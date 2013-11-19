@@ -191,6 +191,17 @@ AssertEqual[
   ]
 ][1]
 
+title "SetContains" ##########
+
+SetContains = ListContains
+
+Refute[SetContains[Set][1]]
+Assert[SetContains[SetAdd[Set][1]][1]]
+Refute[SetContains[SetAdd[Set][1]][2]]
+Assert[SetContains[SetAdd[SetAdd[Set][1]][2]][1]]
+Assert[SetContains[SetAdd[SetAdd[Set][1]][2]][2]]
+Refute[SetContains[SetAdd[SetAdd[Set][1]][2]][3]]
+
 
 title "CELLS" #################
 

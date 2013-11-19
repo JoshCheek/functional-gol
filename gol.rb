@@ -174,11 +174,11 @@ Assert[ListContains[List.(1).(2).(EmptyList)][2]]
 title "SET" #################
 Set     = List[EmptyList]
 SetSize = ListSize
-SetAdd = -> list {
+SetAdd = -> set {
   -> element {
-    Cons[element][list]
-  }
-}
+    If.(ListContains[set][element])
+      .(-> { set })
+      .(-> { Cons[element][set] })}}
 
 AssertEqual[SetSize[Set]][0]
 AssertEqual[SetSize[SetAdd[Set][100]]][1]

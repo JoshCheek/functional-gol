@@ -52,6 +52,17 @@ AssertEqual[1][1]
 RefuteEqual[2][1]
 Assert[True]
 
+title "Boolean operators" #################
+
+Or = -> cond1 {
+    If.(cond1.()).(-> { True })
+}
+
+Assert[Or[-> { True  }][-> { True  }]]
+Assert[Or[-> { False }][-> { True  }]]
+Assert[Or[-> { True  }][-> { False }]]
+Refute[Or[-> { False }][-> { False }]]
+
 title "Test Composition" #################
 Assert[Compose[Not][Not][True]]
 Refute[Compose[Not][Not][False]]

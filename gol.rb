@@ -1,8 +1,7 @@
 def title(text)
-  puts "\n\e[33m" + text.center(30, ?*) + "\e[0m"
+  print "\n\e[33m" + text.ljust(20) + "\e[0m"
 end
 
-title "Composition" #################
 Compose = -> op1 {
   -> op2 {
     -> operand {

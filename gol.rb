@@ -54,12 +54,12 @@ Assert[True]
 title "Boolean operators" #################
 
 Or = -> cond1 {
-    If.(cond1.()).(-> { True })
-}
+  If.(cond1.())
+    .(-> { True })}
 
 And = -> cond1 {
-  If.(Not.(cond1.())).(-> { False })
-}
+  If.(Not.(cond1.()))
+    .(-> { False })}
 
 Assert[Or[-> { True  }][-> { True  }]]
 Assert[Or[-> { False }][-> { True  }]]

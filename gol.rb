@@ -148,6 +148,20 @@ AssertEqual[ListSize[EmptyList]][0]
 AssertEqual[ListSize[List[2][EmptyList]]][1]
 AssertEqual[ListSize[List[2][3][EmptyList]]][2]
 
+title "ListContains"
+
+ListContains = -> list {
+  -> element {
+    If.(IsEmpty.(list))
+      .(-> { False })
+      .(-> { Or.(-> { Equal.(Car.(list)).(element) })
+               .(-> { ListContains.(Cdr.(list)).(element) })})}}
+
+Refute[ListContains[List.(EmptyList)        ][1]]
+Refute[ListContains[List.(2).(EmptyList)    ][1]]
+Assert[ListContains[List.(1).(EmptyList)    ][1]]
+Assert[ListContains[List.(1).(2).(EmptyList)][2]]
+
 title "SET" #################
 Set     = List[EmptyList]
 SetSize = ListSize

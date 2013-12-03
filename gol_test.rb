@@ -101,7 +101,7 @@ AssertEqual[
 ][1]
 
 
-Title["ListContains"]
+Title["ListContains"] # wrong
 
 Refute[ListContainsInt[List.(EmptyList)        ][1]]
 Refute[ListContainsInt[List.(2).(EmptyList)    ][1]]
@@ -109,14 +109,14 @@ Assert[ListContainsInt[List.(1).(EmptyList)    ][1]]
 Assert[ListContainsInt[List.(1).(2).(EmptyList)][2]]
 
 
-Title["SET"]
+Title["SET"] # wrong
 
 AssertEqual[SetSize[Set]][0]
 AssertEqual[SetSize[SetAdd[Set][100]]][1]
 AssertEqual[SetSize[SetAdd[SetAdd[Set][100]][200]]][2]
 
 
-Title["SetContains"]
+Title["SetContains"] # wrong
 
 Refute[SetContainsInt[Set][1]]
 Assert[SetContainsInt[SetAdd[Set][1]][1]]
@@ -137,6 +137,65 @@ Cell3 = Cell[2][2]
 Assert[CellEqual[Cell1][Cell2]]
 Refute[CellEqual[Cell1][Cell3]]
 
-Title["BOARD"]
+__END__
+Title["Encapsulating operators 1"]
+
+Cello = -> x {
+  -> y {
+    List[CellEqual][x][y][EmptyList]
+  }
+}
+
+Datao = Cdr
+Equalo = Car
+
+EqualPrime = -> value1 {
+  -> value2 {
+    Equalo[value1][Datao[value1]][Datao[value2]]
+  }
+}
 
 
+cell1 = Cello[1][1]
+cell2 = Cello[1][1]
+
+Assert[EqualPrime[cell1][cell2]]
+
+IntEquals = -> x {
+  -> y {
+    x == y ? True : False
+  }
+}
+
+Numo = -> x {
+  List[IntEquals][x][EmptyList]
+}
+
+one = Numo[1]
+two = Numo[2]
+
+Assert[EqualPrime[one][one]]
+Refute[EqualPrime[one][two]]
+
+
+
+
+Until
+
+Until[EqualsEmpty]][List[1][2][3][EmptyList]]
+
+
+From[EmptyList][List[Equals][Predecessor][EmptyList][1][2][EmptyList]] ==
+  List[1][2][EmptyList]
+
+
+Seto = -> equal {
+
+}
+
+IntSet = Seto[IntEquals]
+
+Listo = -> equals {
+
+}
+CellSet = Seto[CellEquals]

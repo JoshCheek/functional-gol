@@ -1,14 +1,12 @@
 require 'gol'
 
-def title(text)
-  print "\n\e[33m" + text.ljust(20) + "\e[0m"
-end
+Title = -> text { print "\n\e[33m" + text.ljust(20) + "\e[0m" }
 
 Pass = -> { Print["\e[32m.\e[0m"] }
 Fail = -> { Print["\e[31m.\e[0m"] }
 
 
-title "Boolean"
+Title["Boolean"]
 
 If[True][Pass][Fail]
 If[False][Fail][Pass]
@@ -16,7 +14,7 @@ If[Not[True]][Fail][Pass]
 If[Not[False]][Pass][Fail]
 
 
-title "Assertions"
+Title["Assertions"]
 
 Assert      = -> bool { If[bool][Pass][Fail] }
 AssertEqual = -> a { Assert.~ Equal[a] }
@@ -29,7 +27,7 @@ RefuteEqual[2][1]
 Assert[True]
 
 
-title "Boolean operators"
+Title["Boolean operators"]
 
 Assert[Or[-> { True  }][-> { True  }]]
 Assert[Or[-> { False }][-> { True  }]]
@@ -42,7 +40,7 @@ Refute[And[-> { True  }][-> { False }]]
 Refute[And[-> { False }][-> { False }]]
 
 
-title "Test Composition"
+Title["Test Composition"]
 
 Assert[Compose[Not][Not][True]]
 Refute[Compose[Not][Not][False]]
@@ -51,13 +49,13 @@ Assert[Not.~(Not)[True]]
 Refute[Not.~(Not)[False]]
 
 
-title "VALUES"
+Title["VALUES"]
 
 AssertEqual[1][1]
 RefuteEqual[2][1]
 
 
-title "LISTS" #################
+Title["LISTS"]
 
 MyCons = Cons[1][Cons[2][nil]]
 
@@ -68,7 +66,7 @@ AssertEqual[Car[Cdr[MyCons]]][2]
 RefuteEqual[Car[Cdr[MyCons]]][1]
 
 
-title "CONSTRUCTING LISTS" #################
+Title["CONSTRUCTING LISTS"]
 
 AssertEqual[Car[Cons[1][EmptyList]]][1]
 AssertEqual[List[EmptyList]][EmptyList]
@@ -80,7 +78,7 @@ AssertEqual[Cdr[Cdr[List[1][2][EmptyList]]]][EmptyList]
 AssertEqual[Car[Cdr[Cdr[List[1][2][3][EmptyList]]]]][3]
 
 
-title "ACCESSING LISTS"
+Title["ACCESSING LISTS"]
 
 list = List['a']['b']['c'][EmptyList]
 AssertEqual['a'][At[list][0]]
@@ -88,7 +86,7 @@ AssertEqual['b'][At[list][1]]
 AssertEqual['c'][At[list][2]]
 
 
-title 'LIST SIZE'
+Title['LIST SIZE']
 
 AssertEqual[ListSize[EmptyList]][0]
 AssertEqual[ListSize[List[2][EmptyList]]][1]
@@ -103,7 +101,7 @@ AssertEqual[
 ][1]
 
 
-title "ListContains"
+Title["ListContains"]
 
 Refute[ListContainsInt[List.(EmptyList)        ][1]]
 Refute[ListContainsInt[List.(2).(EmptyList)    ][1]]
@@ -111,14 +109,14 @@ Assert[ListContainsInt[List.(1).(EmptyList)    ][1]]
 Assert[ListContainsInt[List.(1).(2).(EmptyList)][2]]
 
 
-title "SET" #################
+Title["SET"]
 
 AssertEqual[SetSize[Set]][0]
 AssertEqual[SetSize[SetAdd[Set][100]]][1]
 AssertEqual[SetSize[SetAdd[SetAdd[Set][100]][200]]][2]
 
 
-title "SetContains" ##########
+Title["SetContains"]
 
 Refute[SetContainsInt[Set][1]]
 Assert[SetContainsInt[SetAdd[Set][1]][1]]
@@ -128,7 +126,7 @@ Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][2]]
 Refute[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][3]]
 
 
-title "CELLS" #################
+Title["CELLS"]
 
 Cell1 = Cell[1][2]
 AssertEqual[X[Cell1]][1]
@@ -139,6 +137,6 @@ Cell3 = Cell[2][2]
 Assert[CellEqual[Cell1][Cell2]]
 Refute[CellEqual[Cell1][Cell3]]
 
-title "BOARD" #################
+Title["BOARD"]
 
 

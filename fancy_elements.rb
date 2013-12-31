@@ -20,8 +20,8 @@ elementStructEquality = Car
 elementStructData     = Cdr
 elementStructEquals   = -> struct1 {
   -> struct2 {
-    W[elementStructEquality[struct1].(elementStructData[struct1])
-                                    .(elementStructData[struct2])]
+    elementStructEquality[struct1].(elementStructData[struct1])
+                                       .(elementStructData[struct2])
   }
 }
 
@@ -30,7 +30,7 @@ FancyElementListContains =
     -> element {
       If.(IsEmpty.(list))
         .(W[False])
-        .(-> { Or.(elementStructEquals[Car[list]][element])
+        .(-> { Or.(W[elementStructEquals[Car[list]][element]])
                  .(W[FancyElementListContains.(Cdr.(list)).(element)])})}}
 
 FancyElementListEquals =
@@ -42,10 +42,9 @@ FancyElementListEquals =
         .(->{ If.(Or.(->{IsEmpty[list1]})
                     .(->{IsEmpty[list2]}))
                 .(-> { False })
-                .(-> {
-                  If.(elementStructEquality[Car[list1]][elementStructData[Car[list1]]][elementStructData[Car[list2]]])
-                    .(-> { FancyElementListEquals[Cdr[list1]][Cdr[list2]]})
-                    .(-> { False }) })})}}
+                .(-> { If.(elementStructEquals[Car[list1]][Car[list2]])
+                         .(-> { FancyElementListEquals[Cdr[list1]][Cdr[list2]]})
+                         .(-> { False }) })})}}
 
 require 'test_framework'
 
@@ -56,6 +55,7 @@ Num = FancyElementStruct.(
 
 one = Num[1]
 two = Num[2]
+
 
 Title["FancyElementListContains"]
 
@@ -76,3 +76,16 @@ Assert[FancyElementListEquals[List.(one).(EmptyList)][List.(one).(EmptyList)]]
 Assert[FancyElementListEquals[List.(one).(two).(EmptyList)][List.(one).(two).(EmptyList)]]
 Refute[FancyElementListEquals[List.(two).(one).(EmptyList)][List.(one).(two).(EmptyList)]]
 Refute[FancyElementListEquals[List.(one).(two).(EmptyList)][List.(two).(one).(EmptyList)]]
+
+ReversableText = FancyElementStruct.(
+  -> txt1 {
+    -> txt2 {
+      (txt1 == txt2 || txt1.reverse == txt2) ? True : False
+    }
+  }
+)
+
+josh = ReversableText["josh"]
+hsoj = ReversableText["hsoj"]
+
+Assert[FancyElementListEquals[List.(josh).(EmptyList)][List.(hsoj).(EmptyList)]]

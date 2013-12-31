@@ -8,7 +8,10 @@ Equal = -> value1 {
 If    = -> bool {
           -> true_case {
             -> false_case {
-              bool.(true_case).(false_case).()}}}
+              bool
+                .(true_case)
+                .(false_case)
+                .()}}}
 
 Not   = -> bool { bool[False][True] }
 

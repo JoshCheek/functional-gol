@@ -1,7 +1,7 @@
 require 'io'
 require 'boolean'
 
-Title = -> text { print "\n\e[33m" + text.ljust(20) + "\e[0m" }
+Title = -> text { print "\n\e[33m" + text.ljust(30) + "\e[0m" }
 
 Pass = -> { Print["\e[32m.\e[0m"] }
 Fail = -> { Print["\e[31m.\e[0m"] }

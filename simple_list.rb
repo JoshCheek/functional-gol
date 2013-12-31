@@ -1,7 +1,13 @@
+require 'core_list'
 # this cheats
 
 EmptyList = -> * { raise "Should not call EmptyList" }
 IsEmpty = -> list { Equal[list][EmptyList] }
+
+List = -> element {
+  If.(IsEmpty[element])
+    .(-> { EmptyList })
+    .(-> { List2[Cons[element]] })}
 
 List2 = -> previous {
   -> current {
@@ -10,11 +16,6 @@ List2 = -> previous {
       .(-> { List2.(
                -> successor {
                  previous[Cons[current][successor]]})})}}
-
-List = -> element {
-  If.(IsEmpty[element])
-    .(-> { EmptyList })
-    .(-> { List2[Cons[element]] })}
 
 At = -> list {
   -> index {
@@ -27,11 +28,3 @@ ListSize = -> list {
     .(-> { 0 })
     .(-> { 1 + ListSize[Cdr[list]] }) }
 
-ListContains = -> equals {
-  -> list {
-    -> element {
-      If.(IsEmpty.(list))
-        .(-> { False })
-        .(-> { Or.(-> { equals.(Car.(list)).(element) })
-                 .(-> { ListContains[equals].(Cdr.(list)).(element) })})}}
-}

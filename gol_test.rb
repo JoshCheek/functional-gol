@@ -1,9 +1,5 @@
 require 'gol'
-
-Title = -> text { print "\n\e[33m" + text.ljust(20) + "\e[0m" }
-
-Pass = -> { Print["\e[32m.\e[0m"] }
-Fail = -> { Print["\e[31m.\e[0m"] }
+require 'test_framework'
 
 
 Title["Boolean"]
@@ -15,12 +11,6 @@ If[Not[False]][Pass][Fail]
 
 
 Title["Assertions"]
-
-Assert      = -> bool { If[bool][Pass][Fail] }
-AssertEqual = -> a { Assert.~ Equal[a] }
-
-Refute      = Assert.~ Not
-RefuteEqual = -> a { Refute.~ Equal[a] }
 
 AssertEqual[1][1]
 RefuteEqual[2][1]
@@ -92,38 +82,30 @@ AssertEqual[ListSize[EmptyList]][0]
 AssertEqual[ListSize[List[2][EmptyList]]][1]
 AssertEqual[ListSize[List[2][3][EmptyList]]][2]
 
-AssertEqual[
-  SetSize[
-    SetAdd[
-      SetAdd[Set][100]
-    ][100]
-  ]
-][1]
+# AssertEqual[
+#   SetSize[
+#     SetAdd[
+#       SetAdd[Set][100]
+#     ][100]
+#   ]
+# ][1]
 
 
-Title["ListContains"]
+# Title["SET"]
 
-Refute[ListContainsInt[List.(EmptyList)        ][1]]
-Refute[ListContainsInt[List.(2).(EmptyList)    ][1]]
-Assert[ListContainsInt[List.(1).(EmptyList)    ][1]]
-Assert[ListContainsInt[List.(1).(2).(EmptyList)][2]]
-
-
-Title["SET"]
-
-AssertEqual[SetSize[Set]][0]
-AssertEqual[SetSize[SetAdd[Set][100]]][1]
-AssertEqual[SetSize[SetAdd[SetAdd[Set][100]][200]]][2]
+# AssertEqual[SetSize[Set]][0]
+# AssertEqual[SetSize[SetAdd[Set][100]]][1]
+# AssertEqual[SetSize[SetAdd[SetAdd[Set][100]][200]]][2]
 
 
-Title["SetContains"]
-
-Refute[SetContainsInt[Set][1]]
-Assert[SetContainsInt[SetAdd[Set][1]][1]]
-Refute[SetContainsInt[SetAdd[Set][1]][2]]
-Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][1]]
-Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][2]]
-Refute[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][3]]
+# Title["SetContains"]
+#
+# Refute[SetContainsInt[Set][1]]
+# Assert[SetContainsInt[SetAdd[Set][1]][1]]
+# Refute[SetContainsInt[SetAdd[Set][1]][2]]
+# Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][1]]
+# Assert[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][2]]
+# Refute[SetContainsInt[SetAdd[SetAdd[Set][1]][2]][3]]
 
 
 Title["CELLS"]
@@ -138,5 +120,4 @@ Assert[CellEqual[Cell1][Cell2]]
 Refute[CellEqual[Cell1][Cell3]]
 
 Title["BOARD"]
-
 

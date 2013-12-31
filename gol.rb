@@ -8,10 +8,10 @@ require 'cell'
 
 
 
-ListContainsInt = ListContains[Equal]
+# ListContainsInt = ListContains[Equal]
 
 
-SetContainsInt = ListContainsInt
+# SetContainsInt = ListContainsInt
 
 
 

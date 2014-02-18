@@ -16,12 +16,10 @@ FancyElementStruct = -> equality {
   }
 }
 
-elementStructEquality = Car
-elementStructData     = Cdr
-elementStructEquals   = -> struct1 {
-  -> struct2 {
-    elementStructEquality[struct1].(elementStructData[struct1])
-                                       .(elementStructData[struct2])
+FancyElementEquals = -> elem1 {
+  -> elem2 {
+    And.(-> { Car[elem1][Cdr[elem1]][Cdr[elem2]] })
+       .(-> { Car[elem2][Cdr[elem2]][Cdr[elem1]] })
   }
 }
 
@@ -30,7 +28,7 @@ FancyElementListContains =
     -> element {
       If.(IsEmpty.(list))
         .(W[False])
-        .(-> { Or.(-> {elementStructEquals[Car[list]][element]})
+        .(-> { Or.(-> {FancyElementEquals[Car[list]][element]})
                  .(-> {FancyElementListContains.(Cdr.(list)).(element)})})}}
 
 FancyElementListEquals =
@@ -42,6 +40,16 @@ FancyElementListEquals =
         .(->{ If.(Or.(->{IsEmpty[list1]})
                     .(->{IsEmpty[list2]}))
                 .(-> { False })
-                .(-> { If.(elementStructEquals[Car[list1]][Car[list2]])
+                .(-> { If.(FancyElementEquals[Car[list1]][Car[list2]])
                          .(-> { FancyElementListEquals[Cdr[list1]][Cdr[list2]]})
                          .(-> { False }) })})}}
+
+FancyElementListMap =
+  -> map {
+    -> list {
+      If.(IsEmpty.(list))
+        .(-> { list })
+        .(-> { Cons.(map[Car[list]])
+                   .(FancyElementListMap[map][Cdr[list]])})}}
+
+# find, map, take, drop

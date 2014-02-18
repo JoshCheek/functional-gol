@@ -1,13 +1,26 @@
 require 'test_framework'
 require 'fancy_elements'
 
-Num = FancyElementStruct.(
-  -> int1 {
-    -> int2 {
-      int1 == int2 ? True : False }})
+RubyPrimitiveEquals = -> prim1 {
+    -> prim2 {
+      prim1 == prim2 ? True : False }}
 
-one = Num[1]
-two = Num[2]
+RubyPrimitive = FancyElementStruct.(RubyPrimitiveEquals)
+
+
+one   = RubyPrimitive[1]
+two   = RubyPrimitive[2]
+three = RubyPrimitive[3]
+four  = RubyPrimitive[4]
+five  = RubyPrimitive[5]
+six   = RubyPrimitive[6]
+
+corey     = RubyPrimitive['corey']
+not_corey = RubyPrimitive['not_corey']
+
+Title["FancyElementEquality"]
+Assert[FancyElementEquals[one][one]]
+Refute[FancyElementEquals[one][two]]
 
 
 Title["FancyElementListContains"]
@@ -16,6 +29,9 @@ Refute[FancyElementListContains[List.(EmptyList)            ][one]]
 Refute[FancyElementListContains[List.(two).(EmptyList)      ][one]]
 Assert[FancyElementListContains[List.(one).(EmptyList)      ][one]]
 Assert[FancyElementListContains[List.(one).(two).(EmptyList)][two]]
+
+Assert[FancyElementListContains[List.(corey).(EmptyList)    ][corey]]
+Refute[FancyElementListContains[List.(corey).(EmptyList)    ][not_corey]]
 
 
 Title['FancyElementListEquals']
@@ -40,5 +56,27 @@ ReversableText = FancyElementStruct.(
 
 josh = ReversableText["josh"]
 hsoj = ReversableText["hsoj"]
+jOsh = ReversableText["jOsh"]
 
 Assert[FancyElementListEquals[List.(josh).(EmptyList)][List.(hsoj).(EmptyList)]]
+Refute[FancyElementListEquals[List.(josh).(EmptyList)][List.(jOsh).(EmptyList)]]
+Refute[FancyElementListEquals[List.(jOsh).(EmptyList)][List.(hsoj).(EmptyList)]]
+
+
+Title['FancyElementListMap']
+
+double_num = -> fancy_num {
+  RubyPrimitive[Cdr[fancy_num] * 2]
+}
+
+Assert[FancyElementEquals[double_num[one]][two]]
+
+
+list     = List.(one).(two).(three).(EmptyList)
+expected = List.(two).(four).(six).(EmptyList)
+mapper = FancyElementListMap[double_num]
+actual   = mapper[list]
+
+Assert[FancyElementListEquals[EmptyList][mapper[EmptyList]]]
+Assert[FancyElementListEquals[expected][actual]]
+
